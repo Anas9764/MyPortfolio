@@ -33,8 +33,8 @@
   /* margenes bottom */
   /* 0.5rem = 8px || 1rem = 16px ... */
   --mb-0-25: 0.25rem;
-  --mb-0-5: 0.25rem;
-  --mb-0-75: 0.25rem;
+  --mb-0-5: 0.5rem;
+  --mb-0-75: 0.75rem;
   --mb-1: 1rem;
   --mb-1-5: 1.5rem;
   --mb-2: 2rem;
@@ -108,79 +108,99 @@ img {
 .section {
   padding: 6rem 0 2rem;
 }
-.section__title{
+.section__title {
   font-size: var(--h1-font-size);
-color: var(--title-color);
+  color: var(--title-color);
 }
-.section__subtitle{
+.section__subtitle {
   display: block;
   font-size: var(--small-font-size);
   margin-bottom: 4rem;
 }
 .subtitle__title,
-.section__subtitle{
+.section__subtitle {
   text-align: center;
 }
 
 /* /* LAYOUT */
-.container{
+.container {
   max-width: 968px;
   margin-left: auto;
   margin-left: auto;
 }
-.grid{
+.grid {
   display: grid;
   gap: 1.5rem;
 }
- 
-  /* BUTTON */
-.button{
+
+/* BUTTON */
+.button {
   display: inline-block;
   background-color: var(--title-color);
-  color:var(--container-color);
+  color: var(--container-color);
   padding: 1.25rem 2rem;
   border-radius: 1rem;
   font-weight: var(--font-medium);
 }
-.button:gover{
-  background-color: var(--mb-0-5);
+.button:hover {
+  background-color: var(--title-color-dark);
 }
-.button--flex{
+.button__icon{
+  margin-left: var(--mb-0-5);
+}
+.button--flex {
   display: inline-flex;
   align-items: center;
 }
 
 /* BREAKPOINTS */
 /* FOR LARGE DEVICES */
-@media screen and (max-width:992px){
-.container{
-  margin-left: var(--mb-1-5);
-  margin-right: var(--mb-1-5);
-}
-.button{
-  padding: 1rem 1.75rem;
+/* @media screen and (max-width: 1642px) {
+    .container {
+    margin-left: 14rem;
+    margin-right: 14rem;
   }
-  .button__icon{
+  .button {
+    padding: 1rem 1.75rem;
+  }
+  .button__icon {
+    width: 22px;
+    height: 22px;
+  }} */
+@media screen and (max-width: 992px) {
+  .container {
+    margin-left: var(--mb-1-5);
+    margin-right: var(--mb-1-5);
+  }
+  .button {
+    padding: 1rem 1.75rem;
+  }
+  .button__icon {
     width: 22px;
     height: 22px;
   }
 }
 /* FOR MEDIUM DEVICES */
-@media screen and (max-width:768px){
-  .section{
+@media screen and (max-width: 768px) {
+   body{
+    margin: 0 0 var(--header-height ) 0;
+  }
+  .section {
     padding: 2rem 0 4rem;
   }
+  .section__subtitle{
+    margin-bottom:var(--mb-3);
+  }
 }
 
-@media screen and (max-width:576px){
-
+@media screen and (max-width: 576px) {
 }
 /* FOR SMALL DEVICES */
-@media screen and (max-width:350px){
-  :root{
-    --big-font-size: 2.25rem; 
+@media screen and (max-width: 350px) {
+  :root {
+    --big-font-size: 2.25rem;
   }
-  .container{
+  .container {
     margin-left: var(--mb-1);
     margin-right: var(--mb-1);
   }
