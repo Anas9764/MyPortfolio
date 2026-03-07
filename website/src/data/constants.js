@@ -221,11 +221,14 @@ export const experiences = [
     skills: [
       "React Js",
       "JavaScript",
+      "Node Js",
+      "Mongo DB",
+      "Redux",
+      "TypeScript",
       "Firebase",
       "React Native",
       "Tailwind CSS",
-      "Redux",
-      "Git",
+      "Material UI",
     ],
     doc: "",
   },
@@ -237,13 +240,24 @@ export const experiences = [
     date: "Aug 2023 – Oct 2023",
     desc: "Developed responsive web pages using HTML, CSS, JavaScript, and React.js, ensuring cross-device compatibility. Optimized performance and refined code, improving page load speed by 20%.",
     skills: [
+      "ReactJS",
+      "Redux",
+      "Bootstrap",
+      "Material UI",
       "HTML",
       "CSS",
       "JavaScript",
-      "React Js",
-      "Bootstrap",
-      "Responsive Design",
     ],
+    doc: "",
+  },
+  {
+    id: 3,
+    img: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAk1BMVEX////Phe/SjfDt1Pnj4+N8fHyFhYX//f+uAOSxEuXHbez68f3S0tIAAACvAOWzIeazIubWl/EXFxfmwvfBWer15fzgsfT36/zPg++5OOj78/704vu+TenqzPjiuPXrzvjEYusODg4+Pj7Kysrs7OypqamWlpa+vr5GRkYmJiazs7P29vZycnJNTU2goKBdXV1nZ2c0zpqnAAAA2klEQVR4AXzQBRLDMAxE0Q1LaQ1lZqb7X69RIZz8GQ89M+C4jodSfhAmARExU9wpYldJCWpjLVOviv0fWkNm0IjCw1EDymByojo0zFaYx0WEoJ5MSdjo2SSPI0GaY7EkkzCt8igLLMk715yw3uTRpAi4xEW0OcRkS6vald8GXgFNHvPv3AFz3YRq/33nFw/HIipEGZ7UuQ3V7tKCSl39FlQq+OHtkMeD+nX3v+/MIx7Pn+5qEPD3X61F4NKGQNiG8F8pEjMXEbj0vx+PbRzH7ylIoWcIPX19AwYA+lMb+2fcBXEAAAAASUVORK5CYII=",
+    role: "Open Source Contributor",
+    company: "Hacktoberfest 2022 winner",
+    date: "Oct 2022 - 2022",
+    desc: "Collaborated on various open-source projects while gaining valuable insights and mentorship from industry professionals",
+    skills: [],
     doc: "",
   },
 ];
@@ -292,20 +306,7 @@ export const projects = [
     github:
       "https://github.com/Anas9764/FSJS-Bootcamp/tree/main/VsCode%20Clone%20Project",
     webapp: "https://vscode-clone-project97.netlify.app/",
-    // member: [
-    //   {
-    //     name: "Anas Qureshi",
-    //     img: "https://avatars.githubusercontent.com/u/64485885?v=4",
-    //     linkedin: "https://www.linkedin.com/in/rishav-chanda-b89a791b3/",
-    //     github: "https://github.com/rishavchanda/",
-    //   },
-    //   {
-    //     name: "Upasana Chaudhuri",
-    //     img: "https://avatars.githubusercontent.com/u/100614635?v=4",
-    //     linkedin: "https://www.linkedin.com/in/upasana-chaudhuri-2a2bb5231/",
-    //     github: "https://github.com/upasana0710",
-    //   },
-    // ],
+
   },
   {
     id: 9,

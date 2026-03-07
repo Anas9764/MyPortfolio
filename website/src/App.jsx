@@ -1,6 +1,6 @@
 import { ThemeProvider } from "styled-components";
-import { useState } from "react";
-import { darkTheme, lightTheme } from './utils/Themes.js';
+import { useState, useEffect } from "react";
+import { darkTheme } from './utils/Themes.js';
 import Navbar from "./components/Navbar";
 import './App.css';
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -13,6 +13,7 @@ import Experience from "./components/Experience";
 import Education from "./components/Education";
 import ProjectDetails from "./components/ProjectDetails";
 import styled from "styled-components";
+import { getPortfolioData } from "./api";
 
 const Body = styled.div`
   background-color: ${({ theme }) => theme.bg};
@@ -26,25 +27,65 @@ const Wrapper = styled.div`
   clip-path: polygon(0 0, 100% 0, 100% 100%,30% 98%, 0 100%);
 `;
 
+const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #191924;
+  color: white;
+  font-size: 1.5rem;
+`;
+
 function App() {
   const [openModal, setOpenModal] = useState({ state: false, project: null });
+  const [portfolioData, setPortfolioData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data } = await getPortfolioData();
+        setPortfolioData(data);
+      } catch (err) {
+        console.error("Error fetching portfolio data:", err);
+        setError("Failed to load portfolio content. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (portfolioData?.bio?.image) {
+      const favicon = document.querySelector('link[rel="icon"]');
+      const appleFavicon = document.querySelector('link[rel="apple-touch-icon"]');
+      if (favicon) favicon.href = portfolioData.bio.image;
+      if (appleFavicon) appleFavicon.href = portfolioData.bio.image;
+    }
+  }, [portfolioData]);
+
+  if (loading) return <LoadingContainer>Loading Portfolio...</LoadingContainer>;
+  if (error) return <LoadingContainer>{error}</LoadingContainer>;
 
   return (
     <ThemeProvider theme={darkTheme}>
       <Router>
-        <Navbar />
+        <Navbar bio={portfolioData.bio} />
         <Body>
-          <HeroSection />
+          <HeroSection bio={portfolioData.bio} />
           <Wrapper>
-            <Skills />
-            <Experience />
+            <Skills skills={portfolioData.skills} />
+            <Experience experiences={portfolioData.experiences} />
           </Wrapper>
-          <Projects openModal={openModal} setOpenModal={setOpenModal} />
+          <Projects projects={portfolioData.projects} openModal={openModal} setOpenModal={setOpenModal} />
           <Wrapper>
-            <Education />
-            <Contact />
+            <Education education={portfolioData.education} />
+            <Contact bio={portfolioData.bio} />
           </Wrapper>
-          <Footer />
+          <Footer bio={portfolioData.bio} />
           {openModal.state &&
             <ProjectDetails openModal={openModal} setOpenModal={setOpenModal} />
           }

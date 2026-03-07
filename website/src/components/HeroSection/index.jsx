@@ -14,9 +14,10 @@ import {
 } from './HeroStyle';
 import HeroImg from '../../images/HeroImage.jpg';
 import Typewriter from 'typewriter-effect';
-import { Bio } from '../../data/constants';
 
-const HeroSection = () => {
+const HeroSection = ({ bio }) => {
+  if (!bio) return null;
+
   return (
     <div id="about">
       <HeroContainer>
@@ -26,27 +27,27 @@ const HeroSection = () => {
         <HeroInnerContainer>
           <HeroLeftContainer id="Left">
             <Title>
-              Hi, I am <br /> {Bio.name}
+              Hi, I am <br /> {bio.name}
             </Title>
             <TextLoop>
               I am a
               <Span>
                 <Typewriter
                   options={{
-                    strings: Bio.roles,
+                    strings: bio.roles,
                     autoStart: true,
                     loop: true,
                   }}
                 />
               </Span>
             </TextLoop>
-            <SubTitle>{Bio.description}</SubTitle>
-            <ResumeButton href={Bio.resume} target="_blank">
+            <SubTitle>{bio.description}</SubTitle>
+            <ResumeButton href={bio.resume} target="_blank">
               Check Resume
             </ResumeButton>
           </HeroLeftContainer>
           <HeroRightContainer id="Right">
-            <Img src={HeroImg} alt="hero-image" />
+            <Img src={bio.image || HeroImg} alt="hero-image" />
           </HeroRightContainer>
         </HeroInnerContainer>
       </HeroContainer>

@@ -7,10 +7,11 @@ import {
   CardContainer,
 } from './ProjectsStyle';
 import ProjectCard from '../Cards/ProjectCards';
-import { projects } from '../../data/constants';
 
-const Projects = ({ openModal, setOpenModal }) => {
+const Projects = ({ projects, openModal, setOpenModal }) => {
   const [toggle, setToggle] = useState('all');
+
+  if (!projects) return null;
 
   return (
     <Container id="projects">
@@ -23,9 +24,9 @@ const Projects = ({ openModal, setOpenModal }) => {
         </Desc>
         <CardContainer>
           {toggle === 'all'
-            ? projects.map((project) => (
+            ? projects.map((project, index) => (
                 <ProjectCard
-                  key={project.id}
+                  key={project.id || index}
                   project={project}
                   openModal={openModal}
                   setOpenModal={setOpenModal}
@@ -33,9 +34,9 @@ const Projects = ({ openModal, setOpenModal }) => {
               ))
             : projects
                 .filter((item) => item.category === toggle)
-                .map((project) => (
+                .map((project, index) => (
                   <ProjectCard
-                    key={project.id}
+                    key={project.id || index}
                     project={project}
                     openModal={openModal}
                     setOpenModal={setOpenModal}

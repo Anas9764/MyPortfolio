@@ -35,7 +35,7 @@ const Span = styled.span`
 const Card = styled.div`
   width: 650px;
   border-radius: 10px;
-  box-shadow: rgba(23, 92, 230, 0.15) 0px 4px 24px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   padding: 12px 16px;
   justify-content: space-between;
   position: relative;
@@ -48,19 +48,17 @@ const Card = styled.div`
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
     transform: translateY(-5px);
   }
+  &:hover ${Span} {
+    overflow: visible;
+    -webkit-line-clamp: unset;
+  }
   @media only screen and (max-width: 768px) {
     padding: 10px;
     gap: 8px;
     width: 300px;
   }
-  &:hover ${Document} {
-    display: flex;
-  }
-  &:hover ${Span} {
-    overflow: visible;
-    -webkit-line-clamp: unset;
-  }
-  border: 0.1px solid #854ce6;
+  border: 0.1px solid #306ee8;
+  box-shadow: rgba(23, 92, 230, 0.15) 0px 4px 24px;
 `;
 
 const Top = styled.div`
@@ -132,7 +130,10 @@ const EducationCard = ({ education }) => {
           <Date>{education.date}</Date>
         </Body>
       </Top>
-      {education.grade && <Grade><b>Grade: </b>{education.grade}</Grade>}
+      <Grade>
+        <b>Grade: </b>
+        {education.grade}
+      </Grade>
       <Description>
         <Span>{education.desc}</Span>
       </Description>

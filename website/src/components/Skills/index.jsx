@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { skills } from '../../data/constants';
 
 const Container = styled.div`
   display: flex;
@@ -115,7 +114,9 @@ const SkillImage = styled.img`
   height: 24px;
 `;
 
-const Skills = () => {
+const Skills = ({ skills }) => {
+  if (!skills) return null;
+
   return (
     <Container id="skills">
       <Wrapper>

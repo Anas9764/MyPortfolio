@@ -5,7 +5,6 @@ import TimelineSeparator from '@mui/lab/TimelineSeparator';
 import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
-import { education } from '../../data/constants';
 import EducationCard from '../Cards/EducationCard';
 
 const Container = styled.div`
@@ -73,7 +72,9 @@ const TimelineSection = styled.div`
   }
 `;
 
-const Education = () => {
+const Education = ({ education }) => {
+  if (!education) return null;
+
   return (
     <Container id="education">
       <Wrapper>
@@ -86,7 +87,7 @@ const Education = () => {
         <TimelineSection>
           <Timeline>
             {education.map((edu, index) => (
-              <TimelineItem key={edu.id}>
+              <TimelineItem key={edu.id || index}>
                 <TimelineContent sx={{ py: '12px', px: 2 }}>
                   <EducationCard education={edu} />
                 </TimelineContent>

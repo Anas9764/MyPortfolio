@@ -120,7 +120,7 @@ const SubmitButton = styled.button`
   }
 `;
 
-const Contact = () => {
+const Contact = ({ bio }) => {
   const form = useRef();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');

@@ -14,6 +14,18 @@ const Button = styled.button`
   transition: all 0.8s ease-in-out;
 `;
 
+const Description = styled.div`
+  font-weight: 400;
+  color: ${({ theme }) => theme.text_secondary + '99'};
+  overflow: hidden;
+  margin-top: 8px;
+  display: -webkit-box;
+  max-width: 100%;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+`;
+
 const Card = styled.div`
   width: 330px;
   height: 490px;
@@ -34,6 +46,10 @@ const Card = styled.div`
   }
   &:hover ${Button} {
     display: block;
+  }
+  &:hover ${Description} {
+    overflow: visible;
+    -webkit-line-clamp: unset;
   }
 `;
 
@@ -91,18 +107,6 @@ const Date = styled.div`
   @media only screen and (max-width: 768px) {
     font-size: 10px;
   }
-`;
-
-const Description = styled.div`
-  font-weight: 400;
-  color: ${({ theme }) => theme.text_secondary + '99'};
-  overflow: hidden;
-  margin-top: 8px;
-  display: -webkit-box;
-  max-width: 100%;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  text-overflow: ellipsis;
 `;
 
 const Members = styled.div`

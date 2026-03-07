@@ -13,10 +13,9 @@ import {
   MobileLink,
 } from './NavbarStyledComponent';
 import { FaBars } from 'react-icons/fa';
-import { Bio } from '../../data/constants';
 import { useTheme } from 'styled-components';
 
-const Navbar = () => {
+const Navbar = ({ bio }) => {
   const [isOpen, setIsOpen] = useState(false);
   const theme = useTheme();
 
@@ -24,7 +23,7 @@ const Navbar = () => {
     <Nav>
       <NavbarContainer>
         <NavLogo to="/">
-          <a
+          <div
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -34,8 +33,8 @@ const Navbar = () => {
               textDecoration: 'none',
             }}
           >
-            <Span>Anas Qureshi</Span>
-          </a>
+            <Span>{bio?.name || 'Anas Qureshi'}</Span>
+          </div>
         </NavLogo>
         <MobileIcon>
           <FaBars onClick={() => setIsOpen(!isOpen)} />
@@ -49,7 +48,7 @@ const Navbar = () => {
           <NavLink href="#contact">Contact</NavLink>
         </NavItems>
         <ButtonContainer>
-          <GitHubButton href={Bio.github} target="_blank">
+          <GitHubButton href={bio?.github} target="_blank">
             Github Profile
           </GitHubButton>
         </ButtonContainer>
@@ -80,7 +79,7 @@ const Navbar = () => {
                 color: 'white',
                 width: 'max-content',
               }}
-              href={Bio.github}
+              href={bio?.github}
               target="_blank"
             >
               Github Profile

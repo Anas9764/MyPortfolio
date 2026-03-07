@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import { Bio } from '../../data/constants';
 
 const FooterContainer = styled.div`
   width: 100%;
@@ -79,11 +78,11 @@ const Copyright = styled.p`
   text-align: center;
 `;
 
-function Footer() {
+function Footer({ bio }) {
   return (
     <FooterContainer>
       <FooterWrapper>
-        <Logo>Anas Qureshi</Logo>
+        <Logo>{bio?.name || 'Anas Qureshi'}</Logo>
         <Nav>
           <NavLink href="#about">About</NavLink>
           <NavLink href="#skills">Skills</NavLink>
@@ -93,13 +92,13 @@ function Footer() {
           <NavLink href="#contact">Contact</NavLink>
         </Nav>
         <SocialMediaIcons>
-          {Bio.linkedin && (
-            <SocialMediaIcon href={Bio.linkedin} target="_blank">
+          {bio?.linkedin && (
+            <SocialMediaIcon href={bio.linkedin} target="_blank">
               <LinkedInIcon />
             </SocialMediaIcon>
           )}
         </SocialMediaIcons>
-        <Copyright>&copy; 2025 Anas Qureshi. All rights reserved.</Copyright>
+        <Copyright>&copy; {new Date().getFullYear()} {bio?.name || 'Anas Qureshi'}. All rights reserved.</Copyright>
       </FooterWrapper>
     </FooterContainer>
   );
