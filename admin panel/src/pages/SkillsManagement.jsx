@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Edit2, Save, X, Image as ImageIcon } from 'lucide-react';
 import { getPortfolioData, addItem, updateItem, deleteItem } from '../api';
+import Skeleton from '../components/Skeleton';
 
 const SkillsManagement = () => {
   const [categories, setCategories] = useState([]);
@@ -23,7 +24,7 @@ const SkillsManagement = () => {
     } catch (err) {
       console.error('Failed to fetch skills');
     } finally {
-      setLoading(false);
+      setTimeout(() => setLoading(false), 800);
     }
   };
 
@@ -98,7 +99,26 @@ const SkillsManagement = () => {
     }
   };
 
-  if (loading) return <div className="flex justify-center items-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div></div>;
+  if (loading) return (
+    <div className="space-y-8 max-w-6xl mx-auto">
+      <div className="flex justify-between items-center">
+        <Skeleton width="250px" height="40px" />
+        <Skeleton width="150px" height="40px" />
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {[1, 2, 3, 4].map(i => (
+          <div key={i} className="bg-[#171721] p-6 rounded-2xl border border-white/5 space-y-6">
+            <Skeleton width="40%" height="28px" />
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {[1, 2, 3, 4, 5].map(j => (
+                <Skeleton key={j} height="48px" borderRadius="rounded-xl" />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <div className="space-y-8 max-w-6xl mx-auto">

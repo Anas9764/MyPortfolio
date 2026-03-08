@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Save, AlertCircle, CheckCircle } from 'lucide-react';
 import { getPortfolioData, updateBio } from '../api';
+import Skeleton from '../components/Skeleton';
 
 const BioManagement = () => {
   const [formData, setFormData] = useState({
@@ -32,7 +33,7 @@ const BioManagement = () => {
       } catch (err) {
         setMessage({ type: 'error', text: 'Failed to load bio data.' });
       } finally {
-        setLoading(false);
+        setTimeout(() => setLoading(false), 800);
       }
     };
     fetchBio();
@@ -60,7 +61,36 @@ const BioManagement = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  if (loading) return <div className="flex justify-center items-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div></div>;
+  if (loading) return (
+    <div className="max-w-4xl mx-auto space-y-6">
+      <Skeleton width="300px" height="40px" />
+      <div className="bg-[#171721] p-8 rounded-2xl border border-white/5 space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <Skeleton width="100px" height="16px" />
+            <Skeleton height="48px" />
+          </div>
+          <div className="space-y-2">
+            <Skeleton width="100px" height="16px" />
+            <Skeleton height="48px" />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <Skeleton width="100px" height="16px" />
+          <Skeleton height="128px" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {[1, 2, 3, 4, 5, 6].map(i => (
+            <div key={i} className="space-y-2">
+              <Skeleton width="100px" height="16px" />
+              <Skeleton height="48px" />
+            </div>
+          ))}
+        </div>
+        <Skeleton width="150px" height="48px" />
+      </div>
+    </div>
+  );
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">

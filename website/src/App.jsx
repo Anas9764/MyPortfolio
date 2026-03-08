@@ -37,6 +37,17 @@ const LoadingContainer = styled.div`
   font-size: 1.5rem;
 `;
 
+import Skeleton from "./components/Skeleton";
+
+const SkeletonWrapper = styled.div`
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  background-color: #191924;
+  min-height: 100vh;
+`;
+
 function App() {
   const [openModal, setOpenModal] = useState({ state: false, project: null });
   const [portfolioData, setPortfolioData] = useState(null);
@@ -52,7 +63,7 @@ function App() {
         console.error("Error fetching portfolio data:", err);
         setError("Failed to load portfolio content. Please try again later.");
       } finally {
-        setLoading(false);
+        setTimeout(() => setLoading(false), 1000); // Small delay to appreciate the shimmer
       }
     };
     fetchData();
@@ -67,7 +78,37 @@ function App() {
     }
   }, [portfolioData]);
 
-  if (loading) return <LoadingContainer>Loading Portfolio...</LoadingContainer>;
+  if (loading) return (
+    <ThemeProvider theme={darkTheme}>
+      <SkeletonWrapper>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
+          <Skeleton width="150px" height="30px" />
+          <div style={{ display: 'flex', gap: '20px' }}>
+            <Skeleton width="80px" height="20px" />
+            <Skeleton width="80px" height="20px" />
+            <Skeleton width="80px" height="20px" />
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: '40px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div style={{ flex: 1, minWidth: '300px' }}>
+            <Skeleton width="60%" height="40px" style={{ marginBottom: '20px' }} />
+            <Skeleton width="40%" height="30px" style={{ marginBottom: '20px' }} />
+            <Skeleton width="100%" height="100px" style={{ marginBottom: '30px' }} />
+            <Skeleton width="200px" height="50px" borderRadius="12px" />
+          </div>
+          <Skeleton width="400px" height="400px" borderRadius="50%" style={{ margin: '0 auto' }} />
+        </div>
+        <div style={{ marginTop: '60px' }}>
+          <Skeleton width="200px" height="40px" style={{ margin: '0 auto 40px auto', display: 'block' }} />
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
+            <Skeleton height="200px" borderRadius="16px" />
+            <Skeleton height="200px" borderRadius="16px" />
+            <Skeleton height="200px" borderRadius="16px" />
+          </div>
+        </div>
+      </SkeletonWrapper>
+    </ThemeProvider>
+  );
   if (error) return <LoadingContainer>{error}</LoadingContainer>;
 
   return (

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Edit2, Briefcase, X, Save } from 'lucide-react';
 import { getPortfolioData, addItem, updateItem, deleteItem, reorderItems } from '../api';
 import { Reorder } from 'framer-motion';
+import Skeleton from '../components/Skeleton';
 
 const ExperienceManagement = () => {
   const [experience, setExperience] = useState([]);
@@ -28,7 +29,7 @@ const ExperienceManagement = () => {
     } catch (err) {
       console.error('Failed to fetch experience');
     } finally {
-      setLoading(false);
+      setTimeout(() => setLoading(false), 800);
     }
   };
 
@@ -90,7 +91,26 @@ const ExperienceManagement = () => {
     }
   };
 
-  if (loading) return <div className="flex justify-center items-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div></div>;
+  if (loading) return (
+    <div className="space-y-8 max-w-5xl mx-auto">
+      <div className="flex justify-between items-center">
+        <Skeleton width="250px" height="40px" />
+        <Skeleton width="150px" height="40px" />
+      </div>
+      <div className="space-y-4">
+        {[1, 2, 3].map(i => (
+          <div key={i} className="bg-[#171721] p-6 rounded-2xl border border-white/5 flex gap-6">
+            <Skeleton width="64px" height="64px" borderRadius="rounded-xl" />
+            <div className="flex-1 space-y-3">
+              <Skeleton width="40%" height="24px" />
+              <Skeleton width="20%" height="20px" />
+              <Skeleton width="100%" height="60px" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto">
