@@ -185,18 +185,22 @@ const Contact = ({ bio }) => {
             name="from_name"
             onChange={(e) => setName(e.target.value)}
             value={name}
+            required
           />
           <ContactInput
             placeholder="Your Email"
             name="from_email"
+            type="email"
             onChange={(e) => setEmail(e.target.value)}
             value={email}
+            required
           />
           <ContactInput
             placeholder="Subject"
             name="subject"
             onChange={(e) => setSubject(e.target.value)}
             value={subject}
+            required
           />
           <ContactInputMessage
             placeholder="Message"
@@ -204,6 +208,7 @@ const Contact = ({ bio }) => {
             name="message"
             onChange={(e) => setMessage(e.target.value)}
             value={message}
+            required
           />
           <SubmitButton type="submit" disabled={isSubmitting}>
             {isSubmitting ? 'Sending...' : 'Send Message'}
