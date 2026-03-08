@@ -124,17 +124,17 @@ const EducationManagement = () => {
       <Reorder.Group axis="y" values={education} onReorder={handleReorder} className="space-y-4">
         {education.map((edu) => (
           <Reorder.Item key={edu._id} value={edu}>
-            <div className="bg-[#171721] p-6 rounded-2xl border border-white/5 flex gap-6 items-start hover:border-purple-500/30 transition-all group cursor-grab active:cursor-grabbing">
-              <div className="w-16 h-16 bg-[#030014] rounded-xl flex items-center justify-center border border-white/10 shrink-0 overflow-hidden">
+            <div className="bg-[#171721] p-4 md:p-6 rounded-2xl border border-white/5 flex flex-col sm:flex-row gap-4 md:gap-6 items-start hover:border-purple-500/30 transition-all group cursor-grab active:cursor-grabbing">
+              <div className="w-full sm:w-16 h-32 sm:h-16 bg-[#030014] rounded-xl flex items-center justify-center border border-white/10 shrink-0 overflow-hidden">
                 {edu.img ? <img src={edu.img} alt={edu.school} className="w-10 h-10 object-contain" /> : <GraduationCap className="text-gray-500" />}
               </div>
-              <div className="flex-1 space-y-1">
-                <div className="flex justify-between items-start">
+              <div className="flex-1 space-y-1 w-full">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-0">
                   <div>
                     <h3 className="text-xl font-bold">{edu.school}</h3>
                     <p className="text-purple-400 font-medium">{edu.degree}</p>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 self-start">
                     <button 
                       onClick={() => handleOpenModal(edu)}
                       className="p-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
@@ -168,7 +168,7 @@ const EducationManagement = () => {
             </div>
             
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-400">School / University</label>
                   <input 
@@ -189,7 +189,7 @@ const EducationManagement = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-400">Date Range (e.g., 2019-2023)</label>
                   <input 

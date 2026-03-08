@@ -139,11 +139,11 @@ const ProjectsManagement = () => {
       <Reorder.Group axis="y" values={projects} onReorder={handleReorder} className="space-y-4">
         {projects.map((project) => (
           <Reorder.Item key={project._id} value={project}>
-            <div className="bg-[#171721] p-6 rounded-2xl border border-white/5 flex gap-6 items-start hover:border-purple-500/30 transition-all group cursor-grab active:cursor-grabbing">
-              <div className="w-32 h-20 bg-[#030014] rounded-xl flex items-center justify-center border border-white/10 shrink-0 overflow-hidden">
+            <div className="bg-[#171721] p-4 md:p-6 rounded-2xl border border-white/5 flex flex-col sm:flex-row gap-4 md:gap-6 items-start hover:border-purple-500/30 transition-all group cursor-grab active:cursor-grabbing">
+              <div className="w-full sm:w-32 h-32 sm:h-20 bg-[#030014] rounded-xl flex items-center justify-center border border-white/10 shrink-0 overflow-hidden">
                 {project.image ? <img src={project.image} alt={project.title} className="w-full h-full object-cover" /> : <Code className="text-gray-500" />}
               </div>
-              <div className="flex-1 space-y-1">
+              <div className="flex-1 space-y-1 w-full">
                 <div className="flex justify-between items-start">
                   <div>
                     <div className="flex items-center gap-3">
@@ -195,7 +195,7 @@ const ProjectsManagement = () => {
             </div>
             
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-400">Project Title</label>
                   <input 
@@ -219,7 +219,7 @@ const ProjectsManagement = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-400">Github URL</label>
                   <input 

@@ -14,14 +14,17 @@ import MessagesManagement from './pages/MessagesManagement';
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = React.useState(!!localStorage.getItem('token'));
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
   return (
     <Router>
       <div className="flex min-h-screen bg-[#030014] text-white">
-        {isAuthenticated && <Sidebar />}
-        <div className="flex-1 flex flex-col">
-          {isAuthenticated && <Navbar setIsAuthenticated={setIsAuthenticated} />}
-          <main className="p-6">
+        {isAuthenticated && <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />}
+        
+        <div className="flex-1 flex flex-col min-w-0">
+          {isAuthenticated && <Navbar setIsAuthenticated={setIsAuthenticated} toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />}
+          
+          <main className="p-4 md:p-6 overflow-x-hidden">
             <Routes>
               <Route path="/login" element={!isAuthenticated ? <Login setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} />
               <Route path="/" element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} />

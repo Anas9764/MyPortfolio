@@ -64,6 +64,28 @@ router.post('/messages', async (req, res) => {
   try {
     const newMessage = new Message(req.body);
     await newMessage.save();
+
+    // Send email notification to Admin
+    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS
+        }
+      });
+      
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: 'anasqureshi.dev@gmail.com', // Always send to this email
+        subject: `New Portfolio Message from ${req.body.name}`,
+        text: `You have received a new message from your portfolio website.\n\nFrom: ${req.body.name} (${req.body.email})\nSubject: ${req.body.subject}\n\nMessage:\n${req.body.message}`
+      };
+      
+      // Do not await to avoid blocking the response
+      transporter.sendMail(mailOptions).catch(err => console.error('Failed to send notification email:', err));
+    }
+
     res.status(201).json(newMessage);
   } catch (err) {
     res.status(400).json({ message: err.message });
