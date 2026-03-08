@@ -122,19 +122,46 @@ const BioManagement = () => {
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-400">Resume Link</label>
+            <label className="text-sm font-medium text-gray-400">LinkedIn Link</label>
             <input 
-              name="resume" 
-              value={formData.resume} 
+              name="linkedin" 
+              value={formData.linkedin} 
               onChange={handleChange}
               className="w-full p-3 bg-[#030014] border border-white/10 rounded-lg focus:outline-none focus:border-purple-500 transition-colors"
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-400">LinkedIn Link</label>
+            <label className="text-sm font-medium text-gray-400">Twitter Link</label>
             <input 
-              name="linkedin" 
-              value={formData.linkedin} 
+              name="twitter" 
+              value={formData.twitter} 
+              onChange={handleChange}
+              className="w-full p-3 bg-[#030014] border border-white/10 rounded-lg focus:outline-none focus:border-purple-500 transition-colors"
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-400">Instagram Link</label>
+            <input 
+              name="insta" 
+              value={formData.insta} 
+              onChange={handleChange}
+              className="w-full p-3 bg-[#030014] border border-white/10 rounded-lg focus:outline-none focus:border-purple-500 transition-colors"
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-400">Facebook Link</label>
+            <input 
+              name="facebook" 
+              value={formData.facebook} 
+              onChange={handleChange}
+              className="w-full p-3 bg-[#030014] border border-white/10 rounded-lg focus:outline-none focus:border-purple-500 transition-colors"
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-400">Resume Link</label>
+            <input 
+              name="resume" 
+              value={formData.resume} 
               onChange={handleChange}
               className="w-full p-3 bg-[#030014] border border-white/10 rounded-lg focus:outline-none focus:border-purple-500 transition-colors"
             />

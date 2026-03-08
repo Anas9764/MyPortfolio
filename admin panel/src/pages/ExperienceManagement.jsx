@@ -69,7 +69,7 @@ const ExperienceManagement = () => {
     }
   };
 
-  const onReorder = async (newOrder) => {
+  const handleReorder = async (newOrder) => {
     setExperience(newOrder);
     try {
       const orders = newOrder.map((exp, index) => ({ _id: exp._id, priority: index }));
