@@ -1,5 +1,8 @@
 import styled from 'styled-components';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import InstagramIcon from '@mui/icons-material/Instagram';
 
 const FooterContainer = styled.div`
   width: 100%;
@@ -92,9 +95,24 @@ function Footer({ bio }) {
           <NavLink href="#contact">Contact</NavLink>
         </Nav>
         <SocialMediaIcons>
+          {bio?.facebook && (
+            <SocialMediaIcon href={bio.facebook} target="_blank">
+              <FacebookIcon />
+            </SocialMediaIcon>
+          )}
+          {bio?.twitter && (
+            <SocialMediaIcon href={bio.twitter} target="_blank">
+              <TwitterIcon />
+            </SocialMediaIcon>
+          )}
           {bio?.linkedin && (
             <SocialMediaIcon href={bio.linkedin} target="_blank">
               <LinkedInIcon />
+            </SocialMediaIcon>
+          )}
+          {bio?.insta && (
+            <SocialMediaIcon href={bio.insta} target="_blank">
+              <InstagramIcon />
             </SocialMediaIcon>
           )}
         </SocialMediaIcons>

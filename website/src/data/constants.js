@@ -14,9 +14,9 @@ export const Bio = {
     "https://drive.google.com/file/d/1XKfuJ7PWzQB27L9om-bLKZrAM-CdHbIA/view?usp=sharing",
   linkedin:
     "https://www.linkedin.com/in/qureshi-anas/?profileId=ACoAADYDX0UBYLucP7SKoiYkq0nopRHxp_yybog",
-  twitter: "",
-  insta: "",
-  facebook: "",
+  twitter: "https://twitter.com/qureshi_anas8",
+  insta: "https://www.instagram.com/anasqureshi.dev/",
+  facebook: "https://www.facebook.com/anas.qureshi.97",
 };
 
 export const skills = [
