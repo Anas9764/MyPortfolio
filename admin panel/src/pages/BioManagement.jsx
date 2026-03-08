@@ -15,6 +15,7 @@ const BioManagement = () => {
     insta: '',
     facebook: '',
     image: '',
+    contactEmail: '',
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -203,6 +204,16 @@ const BioManagement = () => {
               value={formData.image || ''} 
               onChange={handleChange}
               placeholder="https://example.com/image.jpg"
+              className="w-full p-3 bg-[#030014] border border-white/10 rounded-lg focus:outline-none focus:border-purple-500 transition-colors"
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-400">Contact Email (for Replies)</label>
+            <input 
+              name="contactEmail" 
+              value={formData.contactEmail} 
+              onChange={handleChange}
+              placeholder="anasqureshi.dev@gmail.com"
               className="w-full p-3 bg-[#030014] border border-white/10 rounded-lg focus:outline-none focus:border-purple-500 transition-colors"
             />
           </div>

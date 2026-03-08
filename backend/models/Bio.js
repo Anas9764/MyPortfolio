@@ -11,6 +11,7 @@ const BioSchema = new mongoose.Schema({
   insta: { type: String },
   facebook: { type: String },
   image: { type: String },
+  contactEmail: { type: String, default: 'anasqureshi.dev@gmail.com' },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Bio', BioSchema);

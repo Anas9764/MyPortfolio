@@ -10,6 +10,7 @@ import SkillsManagement from './pages/SkillsManagement';
 import EducationManagement from './pages/EducationManagement';
 import ExperienceManagement from './pages/ExperienceManagement';
 import ProjectsManagement from './pages/ProjectsManagement';
+import MessagesManagement from './pages/MessagesManagement';
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = React.useState(!!localStorage.getItem('token'));
@@ -29,6 +30,7 @@ const App = () => {
               <Route path="/projects" element={isAuthenticated ? <ProjectsManagement /> : <Navigate to="/login" />} />
               <Route path="/education" element={isAuthenticated ? <EducationManagement /> : <Navigate to="/login" />} />
               <Route path="/experience" element={isAuthenticated ? <ExperienceManagement /> : <Navigate to="/login" />} />
+              <Route path="/messages" element={isAuthenticated ? <MessagesManagement /> : <Navigate to="/login" />} />
             </Routes>
           </main>
         </div>

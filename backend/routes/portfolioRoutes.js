@@ -5,6 +5,9 @@ const Skill = require('../models/Skill');
 const Experience = require('../models/Experience');
 const Education = require('../models/Education');
 const Project = require('../models/Project');
+const Analytics = require('../models/Analytics');
+const Message = require('../models/Message');
+const nodemailer = require('nodemailer');
 
 // Get all portfolio data
 router.get('/data', async (req, res) => {
@@ -16,6 +19,103 @@ router.get('/data', async (req, res) => {
     const projects = await Project.find().sort({ priority: 1, id: 1 });
 
     res.json({ bio, skills, experiences, education, projects });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Analytics: Track Visit
+router.post('/analytics/track', async (req, res) => {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    let stats = await Analytics.findOne();
+    
+    if (!stats) {
+      stats = new Analytics({ totalVisits: 1, dailyVisits: [{ date: today, count: 1 }] });
+    } else {
+      stats.totalVisits += 1;
+      const dayIndex = stats.dailyVisits.findIndex(d => d.date === today);
+      if (dayIndex !== -1) {
+        stats.dailyVisits[dayIndex].count += 1;
+      } else {
+        stats.dailyVisits.push({ date: today, count: 1 });
+      }
+    }
+    await stats.save();
+    res.json(stats);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Analytics: Get Stats
+router.get('/analytics/stats', async (req, res) => {
+  try {
+    const stats = await Analytics.findOne();
+    const messageCount = await Message.countDocuments();
+    res.json({ ...stats?._doc, messageCount });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Messages: Create
+router.post('/messages', async (req, res) => {
+  try {
+    const newMessage = new Message(req.body);
+    await newMessage.save();
+    res.status(201).json(newMessage);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// Messages: List
+router.get('/messages', async (req, res) => {
+  try {
+    const messages = await Message.find().sort({ createdAt: -1 });
+    res.json(messages);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Messages: Delete
+router.delete('/messages/:id', async (req, res) => {
+  try {
+    await Message.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Message deleted' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Messages: Reply via Email
+router.post('/messages/reply', async (req, res) => {
+  try {
+    const { to, subject, body, replyTo } = req.body;
+    
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      return res.status(400).json({ message: 'Email credentials not configured on the server. Please add EMAIL_USER and EMAIL_PASS to backend .env' });
+    }
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
+    });
+
+    const mailOptions = {
+      from: replyTo || process.env.EMAIL_USER,
+      to,
+      subject,
+      text: body
+    };
+
+    await transporter.sendMail(mailOptions);
+    res.json({ message: 'Reply sent successfully' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

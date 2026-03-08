@@ -5,5 +5,7 @@ const API = axios.create({
 });
 
 export const getPortfolioData = () => API.get('portfolio/data');
+export const trackVisit = () => API.post('portfolio/analytics/track');
+export const sendMessage = (data) => API.post('portfolio/messages', data);
 
 export default API;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, User, Code, Briefcase, GraduationCap, FolderSearch } from 'lucide-react';
+import { LayoutDashboard, User, Code, Briefcase, GraduationCap, FolderSearch, Mail } from 'lucide-react';
 
 const Sidebar = () => {
   const menuItems = [
@@ -10,6 +10,7 @@ const Sidebar = () => {
     { title: 'Experience', path: '/experience', icon: <Briefcase size={20} /> },
     { title: 'Education', path: '/education', icon: <GraduationCap size={20} /> },
     { title: 'Projects', path: '/projects', icon: <FolderSearch size={20} /> },
+    { title: 'Messages', path: '/messages', icon: <Mail size={20} /> },
   ];
 
   return (

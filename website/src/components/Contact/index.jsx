@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import styled from 'styled-components';
 import emailjs from '@emailjs/browser';
+import { sendMessage } from '../../api';
 import { Snackbar, Alert } from '@mui/material';
 
 const Container = styled.div`
@@ -143,6 +144,14 @@ const Contact = ({ bio }) => {
     const serviceId = 'service_0yiipr1';
     const templateId = 'template_8o0tqv7';
     const publicKey = 'D7Ruiu3Wcn_tKg4BD';
+
+    const messageData = {
+      name: name,
+      email: email,
+      subject: subject,
+      message: message
+    };
+    sendMessage(messageData).catch(err => console.error("Database storage error:", err));
 
     emailjs
       .send(serviceId, templateId, templateParams, publicKey)

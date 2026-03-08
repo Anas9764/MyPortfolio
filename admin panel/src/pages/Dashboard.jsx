@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { LayoutDashboard, Code, Briefcase, GraduationCap, FolderSearch, AlertCircle } from 'lucide-react';
-import { getPortfolioData } from '../api';
+import { getPortfolioData, getAnalytics } from '../api';
+import Skeleton from '../components/Skeleton';
 
 const Dashboard = () => {
   const [stats, setStats] = useState([]);
@@ -10,25 +11,45 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await getPortfolioData();
+        const [portfolioRes, analyticsRes] = await Promise.all([
+          getPortfolioData(),
+          getAnalytics()
+        ]);
+        
+        const data = portfolioRes.data;
+        const analytics = analyticsRes.data;
+        
         const totalSkills = data.skills.reduce((acc, cat) => acc + cat.skills.length, 0);
         const statsData = [
-          { label: 'Skills', value: `${totalSkills}+`, icon: <Code className="text-blue-400" />, color: 'bg-blue-500/10' },
-          { label: 'Experiences', value: data.experiences.length, icon: <Briefcase className="text-purple-400" />, color: 'bg-purple-500/10' },
+          { label: 'Total Visits', value: `${analytics.totalVisits || 0}`, icon: <LayoutDashboard className="text-white" />, color: 'bg-indigo-500/10' },
+          { label: 'Messages', value: analytics.messageCount || 0, icon: <AlertCircle className="text-pink-400" />, color: 'bg-pink-500/10' },
           { label: 'Projects', value: data.projects.length, icon: <FolderSearch className="text-green-400" />, color: 'bg-green-500/10' },
-          { label: 'Education', value: data.education.length, icon: <GraduationCap className="text-orange-400" />, color: 'bg-orange-500/10' },
+          { label: 'Skills', value: `${totalSkills}`, icon: <Code className="text-blue-400" />, color: 'bg-blue-500/10' },
         ];
         setStats(statsData);
       } catch (err) {
         setError('Failed to fetch dashboard metrics. Is the backend running?');
       } finally {
-        setLoading(false);
+        setTimeout(() => setLoading(false), 800);
       }
     };
     fetchData();
   }, []);
 
-  if (loading) return <div className="flex justify-center items-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div></div>;
+  if (loading) return (
+    <div className="space-y-8 animate-in fade-in duration-500">
+      <div className="space-y-2">
+        <Skeleton width="300px" height="40px" />
+        <Skeleton width="400px" height="20px" />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[1, 2, 3, 4].map(i => (
+          <Skeleton key={i} height="120px" borderRadius="rounded-2xl" />
+        ))}
+      </div>
+      <Skeleton height="300px" borderRadius="rounded-3xl" />
+    </div>
+  );
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">

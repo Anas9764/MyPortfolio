@@ -13,6 +13,10 @@ API.interceptors.request.use((req) => {
 export const login = (formData) => API.post('auth/login', formData);
 export const getPortfolioData = () => API.get('portfolio/data');
 export const updateBio = (data) => API.post('portfolio/bio', data);
+export const getAnalytics = () => API.get('portfolio/analytics/stats');
+export const getMessages = () => API.get('portfolio/messages');
+export const deleteMessage = (id) => API.delete(`portfolio/messages/${id}`);
+export const replyMessage = (data) => API.post('portfolio/messages/reply', data);
 
 // Generic CRUD
 export const addItem = (type, data) => API.post(`portfolio/${type}`, data);

@@ -13,7 +13,7 @@ import Experience from "./components/Experience";
 import Education from "./components/Education";
 import ProjectDetails from "./components/ProjectDetails";
 import styled from "styled-components";
-import { getPortfolioData } from "./api";
+import { getPortfolioData, trackVisit } from "./api";
 
 const Body = styled.div`
   background-color: ${({ theme }) => theme.bg};
@@ -59,6 +59,7 @@ function App() {
       try {
         const { data } = await getPortfolioData();
         setPortfolioData(data);
+        trackVisit().catch(err => console.error("Tracking error:", err));
       } catch (err) {
         console.error("Error fetching portfolio data:", err);
         setError("Failed to load portfolio content. Please try again later.");
