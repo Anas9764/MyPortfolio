@@ -300,7 +300,7 @@ export const projects = [
     description:
       "Developed a static VS Code clone, replicating its visual layout and structure with meticulous attention to detail. This project was created to enhance my frontend development skills and deepen my understanding of design accuracy and layout precision.",
     image:
-      "https://github.com/Anas9764/FSJS-Bootcamp/blob/main/VsCode%20Clone%20Project/Vscode%20clone%20output.jpeg?raw=true",
+      "https://raw.githubusercontent.com/Anas9764/FSJS-Bootcamp/main/VsCode%20Clone%20Project/Vscode%20clone%20output.jpeg",
     tags: ["React Js", " Tailwind CSS"],
     category: "web app",
     github:
@@ -335,7 +335,7 @@ export const projects = [
     description:
       "Developed a Currency Converter application using JavaScript, HTML, CSS, and Bootstrap for a clean and responsive user interface. The application integrates the ExchangeRate-API to provide real-time currency conversion rates, allowing users to seamlessly convert values between different currencies. This project enhanced my skills in API integration, front-end development, and creating user-friendly interfaces.",
     image:
-      "https://github.com/Anas9764/Currency-Converter/blob/master/output.png?raw=true",
+      "https://raw.githubusercontent.com/Anas9764/Currency-Converter/master/output.png",
     tags: ["JavaScript", "Css", "HTML", "API", "Bootstrap"],
     category: "web app",
     github: "https://github.com/Anas9764/Currency-Converter",
