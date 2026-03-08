@@ -116,7 +116,7 @@ function Footer({ bio }) {
             </SocialMediaIcon>
           )}
         </SocialMediaIcons>
-        <Copyright>&copy; {new Date().getFullYear()} {bio?.name || 'Anas Qureshi'}. All rights reserved.</Copyright>
+        <Copyright>&copy; {new Date().getFullYear()} {bio?.name || 'Anas Qureshi'}. All rights reserved (v2).</Copyright>
       </FooterWrapper>
     </FooterContainer>
   );
