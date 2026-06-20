@@ -5,6 +5,13 @@ const Skill = require('../models/Skill');
 const Experience = require('../models/Experience');
 const Education = require('../models/Education');
 const Project = require('../models/Project');
+const multer = require('multer');
+const cloudinary = require('../config/cloudinary');
+const { Readable } = require('stream');
+const fs = require('fs');
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 const Analytics = require('../models/Analytics');
 const Message = require('../models/Message');
 const nodemailer = require('nodemailer');
@@ -20,6 +27,35 @@ router.get('/data', async (req, res) => {
 
     res.json({ bio, skills, experiences, education, projects });
   } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Image Upload Route
+router.post('/upload', upload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
+
+    const streamUpload = (req) => {
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { 
+            folder: 'portfolio',
+            transformation: [{ quality: 'auto', fetch_format: 'auto' }]
+          },
+          (error, result) => {
+            if (result) resolve(result);
+            else reject(error);
+          }
+        );
+        Readable.from(req.file.buffer).pipe(stream);
+      });
+    };
+
+    const result = await streamUpload(req);
+    res.json({ url: result.secure_url });
+  } catch (err) {
+    fs.appendFileSync('upload_debug.log', `${new Date().toISOString()} - ${err.message}\n${err.stack}\n`);
     res.status(500).json({ message: err.message });
   }
 });

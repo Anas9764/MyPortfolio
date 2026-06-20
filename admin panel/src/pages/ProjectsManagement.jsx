@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Edit2, ExternalLink, Code, X, Save } from 'lucide-react';
-import { getPortfolioData, addItem, updateItem, deleteItem, reorderItems } from '../api';
+import { getPortfolioData, addItem, updateItem, deleteItem, reorderItems, uploadImage } from '../api';
 import { Reorder } from 'framer-motion';
 import Skeleton from '../components/Skeleton';
+import { Image as ImageIcon, Upload, Loader2, Link as LinkIcon } from 'lucide-react';
 
 const ProjectsManagement = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [useUrl, setUseUrl] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -35,6 +38,7 @@ const ProjectsManagement = () => {
   };
 
   const handleOpenModal = (project = null) => {
+    setUseUrl(false);
     if (project) {
       setEditingId(project._id);
       setFormData({
@@ -51,6 +55,24 @@ const ProjectsManagement = () => {
       setFormData({ title: '', description: '', image: '', tags: '', category: 'web app', github: '', webapp: '' });
     }
     setIsModalOpen(true);
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploading(true);
+    const uploadData = new FormData();
+    uploadData.append('image', file);
+
+    try {
+      const { data } = await uploadImage(uploadData);
+      setFormData({ ...formData, image: data.url });
+    } catch (err) {
+      alert('Image upload failed');
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -239,13 +261,59 @@ const ProjectsManagement = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-400">Image URL</label>
-                <input 
-                  required
-                  className="w-full bg-[#030014] border border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-purple-500 transition-colors"
-                  value={formData.image}
-                  onChange={(e) => setFormData({...formData, image: e.target.value})}
-                />
+                <div className="flex justify-between items-center">
+                  <label className="text-sm font-medium text-gray-400">Project Image</label>
+                  <button 
+                    type="button"
+                    onClick={() => setUseUrl(!useUrl)}
+                    className="text-[10px] text-purple-400 hover:text-purple-300 flex items-center gap-1 transition-colors"
+                  >
+                    {useUrl ? <Upload size={10} /> : <LinkIcon size={10} />}
+                    {useUrl ? 'Switch to Upload' : 'Use Image URL'}
+                  </button>
+                </div>
+                
+                {useUrl ? (
+                  <input 
+                    required
+                    className="w-full bg-[#030014] border border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-purple-500 transition-colors"
+                    value={formData.image}
+                    onChange={(e) => setFormData({...formData, image: e.target.value})}
+                    placeholder="https://example.com/image.jpg"
+                  />
+                ) : (
+                  <div className="flex gap-4 items-center">
+                    <div className="relative group w-32 h-20 bg-black/40 rounded-xl border border-dashed border-white/20 flex items-center justify-center overflow-hidden shrink-0">
+                      {formData.image ? (
+                        <>
+                          <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <label className="cursor-pointer p-2 bg-purple-600 rounded-full text-white hover:bg-purple-700 transition-colors">
+                              <Upload size={16} />
+                              <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
+                            </label>
+                          </div>
+                        </>
+                      ) : (
+                        <label className="cursor-pointer flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-purple-400 transition-colors group">
+                          {uploading ? <Loader2 size={24} className="animate-spin text-purple-500" /> : <Upload size={24} className="group-hover:scale-110 transition-transform" />}
+                          <span className="text-[10px] mt-1">{uploading ? 'Uploading...' : 'Upload'}</span>
+                          <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} disabled={uploading} />
+                        </label>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-[10px] text-gray-500 line-clamp-2 leading-relaxed">
+                        Recommended size: 1280x720px. Max size: 5MB. Cloudinary will automatically optimize your image for the web.
+                      </p>
+                      {formData.image && !uploading && (
+                        <div className="flex items-center gap-2 mt-2 text-[10px] text-green-400 bg-green-400/10 px-2 py-1 rounded-md border border-green-400/20 w-fit">
+                          <ImageIcon size={12} /> Image Ready
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-2">

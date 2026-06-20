@@ -25,3 +25,8 @@ export const deleteItem = (type, id) => API.delete(`portfolio/${type}/${id}`);
 
 // Reorder
 export const reorderItems = (type, orders) => API.post(`portfolio/${type}/reorder`, { orders });
+
+// Image Upload
+export const uploadImage = (formData) => API.post('portfolio/upload', formData, {
+  headers: { 'Content-Type': 'multipart/form-data' }
+});
