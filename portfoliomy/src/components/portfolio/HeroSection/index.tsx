@@ -37,7 +37,7 @@ const HeroSection = ({ bio }: HeroSectionProps) => {
         <HeroInnerContainer>
           <HeroLeftContainer id="Left">
             <Title>
-              Hey, I am <br /> {bio.name}
+              Hi, I am <br /> {bio.name}
             </Title>
             <TextLoop>
               I am a

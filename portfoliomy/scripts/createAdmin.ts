@@ -8,6 +8,7 @@ dotenv.config({ path: ".env.local" });
 const createAdmin = async () => {
   const email = process.env.ADMIN_EMAIL || "admin@anas.dev";
   const password = process.env.ADMIN_PASSWORD || "AdminPassword123";
+  const legacyEmails = ["admin@anas.dev", email];
 
   try {
     if (!process.env.MONGO_URI) {
@@ -16,10 +17,11 @@ const createAdmin = async () => {
     await mongoose.connect(process.env.MONGO_URI);
     console.log("Connected to MongoDB");
 
+    await User.deleteMany({ email: { $in: legacyEmails } });
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    await User.deleteMany({ email });
     await User.create({ email, password: hashedPassword });
 
     console.log("Admin User Created Successfully");
