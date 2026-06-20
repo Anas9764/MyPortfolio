@@ -1,0 +1,529 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import {
+  Plus,
+  Trash2,
+  Edit2,
+  ExternalLink,
+  Code,
+  X,
+  Save,
+  Image as ImageIcon,
+  Upload,
+  Loader2,
+  Link as LinkIcon,
+} from "lucide-react";
+import { Reorder } from "framer-motion";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  getPortfolioData,
+  addItem,
+  updateItem,
+  deleteItem,
+  reorderItems,
+  uploadImage,
+} from "@/lib/api-client";
+import Skeleton from "@/components/admin/Skeleton";
+import type { PortfolioData, Project } from "@/types/portfolio";
+
+interface ProjectFormData {
+  title: string;
+  description: string;
+  image: string;
+  tags: string;
+  category: string;
+  github: string;
+  webapp: string;
+}
+
+export default function ProjectsManagementPage() {
+  const queryClient = useQueryClient();
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [useUrl, setUseUrl] = useState(false);
+  const [formData, setFormData] = useState<ProjectFormData>({
+    title: "",
+    description: "",
+    image: "",
+    tags: "",
+    category: "web app",
+    github: "",
+    webapp: "",
+  });
+
+  const { data, isLoading } = useQuery<PortfolioData>({
+    queryKey: ["portfolio-data"],
+    queryFn: () => getPortfolioData() as Promise<PortfolioData>,
+  });
+
+  useEffect(() => {
+    if (data?.projects) {
+      setProjects(data.projects);
+    }
+  }, [data?.projects]);
+
+  const invalidate = () =>
+    queryClient.invalidateQueries({ queryKey: ["portfolio-data"] });
+
+  const saveMutation = useMutation({
+    mutationFn: async (processedData: Record<string, unknown>) => {
+      if (editingId) {
+        await updateItem("projects", editingId, processedData);
+      } else {
+        await addItem("projects", processedData);
+      }
+    },
+    onSuccess: () => {
+      setIsModalOpen(false);
+      invalidate();
+    },
+    onError: () => alert("Operation failed"),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteItem("projects", id),
+    onSuccess: invalidate,
+    onError: () => alert("Delete failed"),
+  });
+
+  const reorderMutation = useMutation({
+    mutationFn: (orders: { _id: string; priority: number }[]) =>
+      reorderItems("projects", orders),
+    onError: () => console.error("Failed to update order"),
+  });
+
+  const handleOpenModal = (project?: Project) => {
+    setUseUrl(false);
+    if (project) {
+      setEditingId(project._id || null);
+      setFormData({
+        title: project.title,
+        description: project.description,
+        image: project.image,
+        tags: project.tags?.join(", ") || "",
+        category: project.category,
+        github: project.github || "",
+        webapp: project.webapp || "",
+      });
+    } else {
+      setEditingId(null);
+      setFormData({
+        title: "",
+        description: "",
+        image: "",
+        tags: "",
+        category: "web app",
+        github: "",
+        webapp: "",
+      });
+    }
+    setIsModalOpen(true);
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    const uploadData = new FormData();
+    uploadData.append("image", file);
+
+    try {
+      const result = (await uploadImage(uploadData)) as { url: string };
+      setFormData({ ...formData, image: result.url });
+    } catch {
+      alert("Image upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const processedData = {
+      ...formData,
+      tags: formData.tags
+        .split(",")
+        .map((t) => t.trim())
+        .filter((t) => t !== ""),
+    };
+    saveMutation.mutate(processedData);
+  };
+
+  const handleReorder = (newOrder: Project[]) => {
+    setProjects(newOrder);
+    const orders = newOrder.map((proj, index) => ({
+      _id: proj._id!,
+      priority: index,
+    }));
+    reorderMutation.mutate(orders);
+  };
+
+  const handleDelete = (id: string) => {
+    if (window.confirm("Are you sure you want to delete this project?")) {
+      deleteMutation.mutate(id);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-8 max-w-7xl mx-auto">
+        <div className="flex justify-between items-center">
+          <div>
+            <Skeleton width="300px" height="40px" />
+            <Skeleton width="250px" height="20px" className="mt-2" />
+          </div>
+          <Skeleton width="160px" height="48px" borderRadius="rounded-xl" />
+        </div>
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="bg-[#171721] p-6 rounded-2xl border border-white/5 flex gap-6"
+            >
+              <Skeleton width="128px" height="80px" borderRadius="rounded-xl" />
+              <div className="flex-1 space-y-3">
+                <Skeleton width="30%" height="24px" />
+                <Skeleton width="100%" height="40px" />
+                <div className="flex gap-2">
+                  <Skeleton width="60px" height="20px" borderRadius="rounded-full" />
+                  <Skeleton width="60px" height="20px" borderRadius="rounded-full" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-8 max-w-7xl mx-auto">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold">Projects Management</h1>
+          <p className="text-gray-400 mt-1">
+            Manage cases, apps, and side projects.
+          </p>
+        </div>
+        <button
+          onClick={() => handleOpenModal()}
+          className="flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-xl font-semibold transition-all shadow-lg active:scale-95"
+        >
+          <Plus size={20} />
+          New Project
+        </button>
+      </div>
+
+      <Reorder.Group
+        axis="y"
+        values={projects}
+        onReorder={handleReorder}
+        className="space-y-4"
+      >
+        {projects.map((project) => (
+          <Reorder.Item key={project._id} value={project}>
+            <div className="bg-[#171721] p-4 md:p-6 rounded-2xl border border-white/5 flex flex-col sm:flex-row gap-4 md:gap-6 items-start hover:border-purple-500/30 transition-all group cursor-grab active:cursor-grabbing">
+              <div className="w-full sm:w-32 h-32 sm:h-20 bg-[#030014] rounded-xl flex items-center justify-center border border-white/10 shrink-0 overflow-hidden">
+                {project.image ? (
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <Code className="text-gray-500" />
+                )}
+              </div>
+              <div className="flex-1 space-y-1 w-full">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded-full border border-purple-500/20">
+                        {project.category}
+                      </span>
+                      <h3 className="text-xl font-bold">{project.title}</h3>
+                    </div>
+                    <div className="flex gap-3 mt-1">
+                      {project.github && (
+                        <a
+                          href={project.github}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-gray-400 hover:text-white transition-colors"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Code size={16} />
+                        </a>
+                      )}
+                      {project.webapp && (
+                        <a
+                          href={project.webapp}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-gray-400 hover:text-white transition-colors"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <ExternalLink size={16} />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenModal(project);
+                      }}
+                      className="p-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+                    >
+                      <Edit2 size={18} />
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(project._id!);
+                      }}
+                      className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {project.tags?.map((tag, i) => (
+                    <span
+                      key={i}
+                      className="text-[10px] px-2 py-0.5 bg-purple-500/10 text-purple-400 rounded-full border border-purple-500/20"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <p className="text-sm text-gray-400 mt-3 leading-relaxed line-clamp-2">
+                  {project.description}
+                </p>
+              </div>
+            </div>
+          </Reorder.Item>
+        ))}
+      </Reorder.Group>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#171721] border border-white/10 w-full max-w-3xl rounded-3xl overflow-hidden shadow-2xl">
+            <div className="flex justify-between items-center p-6 border-b border-white/10">
+              <h2 className="text-xl font-bold">
+                {editingId ? "Edit Project" : "Add New Project"}
+              </h2>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="text-gray-400 hover:text-white p-2"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-400">
+                    Project Title
+                  </label>
+                  <input
+                    required
+                    className="w-full bg-[#030014] border border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-purple-500 transition-colors"
+                    value={formData.title}
+                    onChange={(e) =>
+                      setFormData({ ...formData, title: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-400">Category</label>
+                  <select
+                    className="w-full bg-[#030014] border border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-purple-500 transition-colors"
+                    value={formData.category}
+                    onChange={(e) =>
+                      setFormData({ ...formData, category: e.target.value })
+                    }
+                  >
+                    <option value="web app">Web App</option>
+                    <option value="android app">Android App</option>
+                    <option value="machine learning">Machine Learning</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-400">
+                    Github URL
+                  </label>
+                  <input
+                    className="w-full bg-[#030014] border border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-purple-500 transition-colors"
+                    value={formData.github}
+                    onChange={(e) =>
+                      setFormData({ ...formData, github: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-400">
+                    Live Web App URL
+                  </label>
+                  <input
+                    className="w-full bg-[#030014] border border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-purple-500 transition-colors"
+                    value={formData.webapp}
+                    onChange={(e) =>
+                      setFormData({ ...formData, webapp: e.target.value })
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <label className="text-sm font-medium text-gray-400">
+                    Project Image
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setUseUrl(!useUrl)}
+                    className="text-[10px] text-purple-400 hover:text-purple-300 flex items-center gap-1 transition-colors"
+                  >
+                    {useUrl ? <Upload size={10} /> : <LinkIcon size={10} />}
+                    {useUrl ? "Switch to Upload" : "Use Image URL"}
+                  </button>
+                </div>
+
+                {useUrl ? (
+                  <input
+                    required
+                    className="w-full bg-[#030014] border border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-purple-500 transition-colors"
+                    value={formData.image}
+                    onChange={(e) =>
+                      setFormData({ ...formData, image: e.target.value })
+                    }
+                    placeholder="https://example.com/image.jpg"
+                  />
+                ) : (
+                  <div className="flex gap-4 items-center">
+                    <div className="relative group w-32 h-20 bg-black/40 rounded-xl border border-dashed border-white/20 flex items-center justify-center overflow-hidden shrink-0">
+                      {formData.image ? (
+                        <>
+                          <img
+                            src={formData.image}
+                            alt="Preview"
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <label className="cursor-pointer p-2 bg-purple-600 rounded-full text-white hover:bg-purple-700 transition-colors">
+                              <Upload size={16} />
+                              <input
+                                type="file"
+                                className="hidden"
+                                accept="image/*"
+                                onChange={handleImageUpload}
+                              />
+                            </label>
+                          </div>
+                        </>
+                      ) : (
+                        <label className="cursor-pointer flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-purple-400 transition-colors group">
+                          {uploading ? (
+                            <Loader2
+                              size={24}
+                              className="animate-spin text-purple-500"
+                            />
+                          ) : (
+                            <Upload
+                              size={24}
+                              className="group-hover:scale-110 transition-transform"
+                            />
+                          )}
+                          <span className="text-[10px] mt-1">
+                            {uploading ? "Uploading..." : "Upload"}
+                          </span>
+                          <input
+                            type="file"
+                            className="hidden"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            disabled={uploading}
+                          />
+                        </label>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-[10px] text-gray-500 line-clamp-2 leading-relaxed">
+                        Recommended size: 1280x720px. Max size: 5MB. Cloudinary
+                        will automatically optimize your image for the web.
+                      </p>
+                      {formData.image && !uploading && (
+                        <div className="flex items-center gap-2 mt-2 text-[10px] text-green-400 bg-green-400/10 px-2 py-1 rounded-md border border-green-400/20 w-fit">
+                          <ImageIcon size={12} /> Image Ready
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-400">
+                  Tags (comma separated)
+                </label>
+                <input
+                  required
+                  className="w-full bg-[#030014] border border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-purple-500 transition-colors"
+                  value={formData.tags}
+                  onChange={(e) =>
+                    setFormData({ ...formData, tags: e.target.value })
+                  }
+                  placeholder="React, Tailwind, Node.js"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-400">
+                  Description
+                </label>
+                <textarea
+                  required
+                  rows={4}
+                  className="w-full bg-[#030014] border border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-purple-500 transition-colors resize-none"
+                  value={formData.description}
+                  onChange={(e) =>
+                    setFormData({ ...formData, description: e.target.value })
+                  }
+                />
+              </div>
+
+              <div className="flex gap-4 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="flex-1 px-4 py-3 bg-white/5 hover:bg-white/10 rounded-xl font-medium transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={saveMutation.isPending}
+                  className="flex-1 px-4 py-3 bg-purple-600 hover:bg-purple-700 rounded-xl font-medium transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  <Save size={20} />
+                  {editingId ? "Update Project" : "Add Project"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
